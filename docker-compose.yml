@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # The Flask API Backend (Production Grade)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=app.py
+      - DATABASE_URL=sqlite:///gvk_transport_v2.db
+    volumes:
+      - ./backend/gvk_transport_v2.db:/app/gvk_transport_v2.db
+    restart: always
+
+  # The React Frontend (Production Grade via Nginx)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:5000
+    depends_on:
+      - backend
+    restart: always
