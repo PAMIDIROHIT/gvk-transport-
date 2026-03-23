@@ -1,4 +1,4 @@
-from app.models import db, MinePurchase, FactoryLoading, FactorySale, Lorry, FuelRecord, DriverExpense, MaintenanceRecord, LorryEmi, OtherExpense
+from app.models import db, MinePurchase, FactoryLoading, FactorySale, Lorry, TripRecord, FuelRecord, DriverExpense, MaintenanceRecord, LorryEmi, OtherExpense
 from sqlalchemy import func
 
 class ProfitCalculator:
@@ -16,13 +16,13 @@ class ProfitCalculator:
         sales_query = FactorySale.query
         if start_date and end_date:
             sales_query = sales_query.filter(FactorySale.date.between(start_date, end_date))
-        total_sales = db.session.query(func.sum(FactorySale.total_amount)).scalar() or 0.0
+        total_sales = db.session.query(func.sum(FactorySale.total_sales_amount)).scalar() or 0.0
 
         # Query 2: Lorry direct income (if they took outside jobs)
-        lorry_query = Lorry.query
+        lorry_query = TripRecord.query
         # Note: In a real system you'd track individual trip income per timeframe,
-        # but for this basic calculation, we'll sum the Lorry model's master income field.
-        total_lorry_income = db.session.query(func.sum(Lorry.income)).scalar() or 0.0
+        # but for this basic calculation, we'll sum the TripRecord model's trip_income field.
+        total_lorry_income = db.session.query(func.sum(TripRecord.trip_income)).scalar() or 0.0
 
         return total_sales + total_lorry_income
 

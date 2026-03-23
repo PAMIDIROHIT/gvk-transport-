@@ -4,8 +4,7 @@ from app.models import db, FactorySale, MinePurchase
 
 @pytest.fixture
 def app():
-    app = create_app()
-    app.config.update({
+    app = create_app({
         "TESTING": True,
         "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:"  # Use in-memory DB for tests
     })

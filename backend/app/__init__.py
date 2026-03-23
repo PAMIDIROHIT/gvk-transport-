@@ -5,7 +5,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from .models import db, User, MinePurchase, FactoryLoading, FactorySale, Lorry, TripRecord, FuelRecord, DriverExpense, LorryEmi, MaintenanceRecord, PrivateTransport
 from .routes import api_bp
 
-def create_app():
+def create_app(test_config=None):
     """
     Factory function to create and configure the Flask application.
     """
@@ -24,7 +24,10 @@ def create_app():
     
     # Configure SQLite Database
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(base_dir, '..', 'gvk_transport_v2.db')}"
+    if test_config is None:
+        app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(base_dir, '..', 'gvk_transport_v2.db')}"
+    else:
+        app.config.update(test_config)
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     # Initialize the database with this app
