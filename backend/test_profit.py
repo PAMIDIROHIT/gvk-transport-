@@ -1,6 +1,6 @@
 import pytest
 from app import create_app
-from models import db, FactorySale, MinePurchase
+from app.models import db, FactorySale, MinePurchase
 
 @pytest.fixture
 def app():
@@ -29,16 +29,19 @@ def test_profit_calculation(app):
     with app.app_context():
         # Add some mock sales (Income = 15000)
         sale = FactorySale(
+            invoice_number="INV-1002",
             factory_name="Test Factory",
+            material_name="Test Ore",
             destination="Test City",
             tonnes=10,
-            rate_per_ton=1500,
-            total_amount=15000
+            selling_price_per_ton=1500,
+            total_sales_amount=15000
         )
         db.session.add(sale)
         
         # Add some mock purchases (Expense = 5000)
         purchase = MinePurchase(
+            mine_name="Test Mine",
             material_name="Test Ore",
             tonnes=10,
             cost_per_ton=500,

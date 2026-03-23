@@ -10,5 +10,6 @@ def make_request(url, data):
     except urllib.error.HTTPError as e:
         print(e.code, e.read().decode('utf-8'))
 
-print("\nTesting /expense :")
-make_request('http://10.254.88.229:5000/api/v1/expense/', {"description": "Test Tax", "taxes": 1500, "formalities": 500})
+if __name__ == '__main__':
+    print("\nTesting /expense :")
+    make_request('http://10.254.88.229:5000/api/v1/expense/', {"description": "Test Tax", "taxes": 1500, "formalities": 500})

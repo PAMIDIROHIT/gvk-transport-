@@ -1,4 +1,4 @@
-from models import db, MinePurchase, FactoryLoading, FactorySale, Lorry, FuelRecord, LorryExpense, OtherExpense
+from app.models import db, MinePurchase, FactoryLoading, FactorySale, Lorry, FuelRecord, DriverExpense, MaintenanceRecord, LorryEmi, OtherExpense
 from sqlalchemy import func
 
 class ProfitCalculator:
@@ -38,7 +38,10 @@ class ProfitCalculator:
         fuel_query = db.session.query(func.sum(FuelRecord.total_cost)).scalar() or 0.0
         
         # 3. Lorry Operating Expenses (Driver salary, maintenance, EMI, etc)
-        lorry_exp_query = db.session.query(func.sum(LorryExpense.total_amount)).scalar() or 0.0
+        driver_exp = db.session.query(func.sum(DriverExpense.monthly_salary + DriverExpense.bata + DriverExpense.overtime)).scalar() or 0.0
+        maint_exp = db.session.query(func.sum(MaintenanceRecord.total_maintenance)).scalar() or 0.0
+        emi_exp = db.session.query(func.sum(LorryEmi.emi_amount)).scalar() or 0.0
+        lorry_exp_query = driver_exp + maint_exp + emi_exp
         
         # 4. Other Expenses (Taxes, formalities)
         other_exp_query = db.session.query(func.sum(OtherExpense.total_amount)).scalar() or 0.0
